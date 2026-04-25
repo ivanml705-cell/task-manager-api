@@ -20,6 +20,14 @@ REST API for task management built with Java 17, Spring Boot, Maven and MySQL.
 - `service`
 - `service.impl`
 
+## Endpoints
+
+- `GET /tasks`
+- `GET /tasks/{id}`
+- `POST /tasks`
+- `PUT /tasks/{id}`
+- `DELETE /tasks/{id}`
+
 ## Run locally
 
 1. Create a MySQL database named `task_management` or use the default URL with `createDatabaseIfNotExist=true`.
