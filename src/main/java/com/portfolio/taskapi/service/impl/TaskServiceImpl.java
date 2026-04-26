@@ -3,7 +3,7 @@ package com.portfolio.taskapi.service.impl;
 import com.portfolio.taskapi.dto.request.TaskRequest;
 import com.portfolio.taskapi.dto.response.TaskResponse;
 import com.portfolio.taskapi.entity.Task;
-import com.portfolio.taskapi.exception.TaskNotFoundException;
+import com.portfolio.taskapi.exception.ResourceNotFoundException;
 import com.portfolio.taskapi.mapper.TaskMapper;
 import com.portfolio.taskapi.repository.TaskRepository;
 import com.portfolio.taskapi.service.TaskService;
@@ -61,6 +61,6 @@ public class TaskServiceImpl implements TaskService {
 
     private Task findTaskById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException(id));
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
     }
 }

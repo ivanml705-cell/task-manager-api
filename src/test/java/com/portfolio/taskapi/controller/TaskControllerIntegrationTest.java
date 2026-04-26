@@ -93,6 +93,37 @@ class TaskControllerIntegrationTest {
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/tasks/{id}", taskId))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Task not found with id " + taskId))
+                .andExpect(jsonPath("$.path").value("/tasks/" + taskId))
+                .andExpect(jsonPath("$.errors").isMap())
+                .andExpect(jsonPath("$.timestamp").isString());
+    }
+
+    @Test
+    void shouldReturnValidationErrorsWhenRequestIsInvalid() throws Exception {
+        String invalidRequest = """
+                {
+                  "title": "",
+                  "description": "%s",
+                  "completed": null,
+                  "dueDate": "2026-05-10"
+                }
+                """.formatted("a".repeat(501));
+
+        mockMvc.perform(post("/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidRequest))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.path").value("/tasks"))
+                .andExpect(jsonPath("$.errors.title").value("Title is required"))
+                .andExpect(jsonPath("$.errors.description").value("Description must not exceed 500 characters"))
+                .andExpect(jsonPath("$.errors.completed").value("Completed is required"))
+                .andExpect(jsonPath("$.timestamp").isString());
     }
 }
