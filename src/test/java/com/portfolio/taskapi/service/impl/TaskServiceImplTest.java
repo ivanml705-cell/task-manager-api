@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +80,52 @@ class TaskServiceImplTest {
         assertThat(response.description()).isEqualTo("Create the base API for tasks");
         assertThat(response.completed()).isFalse();
         assertThat(response.dueDate()).isEqualTo(LocalDate.of(2026, 5, 10));
+    }
+
+    @Test
+    void shouldFindAllTasks() {
+        Task newestTask = task(2L);
+        newestTask.setTitle("Review documentation");
+        newestTask.setCreatedAt(LocalDateTime.of(2026, 4, 28, 11, 0));
+
+        Task oldestTask = task(1L);
+        oldestTask.setCreatedAt(LocalDateTime.of(2026, 4, 27, 10, 0));
+
+        when(taskRepository.findAllByOrderByCreatedAtDesc()).thenReturn(List.of(newestTask, oldestTask));
+
+        List<TaskResponse> responses = taskService.findAll();
+
+        assertThat(responses).hasSize(2);
+        assertThat(responses).extracting(TaskResponse::id).containsExactly(2L, 1L);
+        assertThat(responses).extracting(TaskResponse::title)
+                .containsExactly("Review documentation", "Prepare portfolio project");
+    }
+
+    @Test
+    void shouldUpdateTask() {
+        Task task = task(1L);
+        TaskRequest request = new TaskRequest(
+                "Prepare portfolio API",
+                "CRUD for task management",
+                true,
+                LocalDate.of(2026, 5, 15)
+        );
+
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        TaskResponse response = taskService.update(1L, request);
+
+        assertThat(response.id()).isEqualTo(1L);
+        assertThat(response.title()).isEqualTo("Prepare portfolio API");
+        assertThat(response.description()).isEqualTo("CRUD for task management");
+        assertThat(response.completed()).isTrue();
+        assertThat(response.dueDate()).isEqualTo(LocalDate.of(2026, 5, 15));
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        assertThat(taskCaptor.getValue().getTitle()).isEqualTo("Prepare portfolio API");
+        assertThat(taskCaptor.getValue().isCompleted()).isTrue();
     }
 
     @Test
