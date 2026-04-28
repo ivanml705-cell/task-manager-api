@@ -1,38 +1,73 @@
 # Task API
 
+🚀 Proyecto backend de portfolio enfocado en arquitectura limpia, testing y buenas prácticas de desarrollo.
+
 ![Java](https://img.shields.io/badge/Java-17-007396?style=flat-square&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5-6DB33F?style=flat-square&logo=springboot&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-build-C71A36?style=flat-square&logo=apachemaven&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-persistence-4479A1?style=flat-square&logo=mysql&logoColor=white)
 
-API REST para gestionar tareas, desarrollada con Java 17 y Spring Boot. El proyecto está pensado como una pieza de portfolio backend: mantiene una arquitectura por capas, usa DTOs para separar la API del modelo de persistencia, valida las entradas y devuelve errores con una estructura consistente.
+API REST para gestionar tareas, desarrollada con Java 17 y Spring Boot. Este proyecto está diseñado como pieza de portfolio backend, priorizando código limpio, arquitectura por capas, validación de datos y pruebas automatizadas.
 
-## Stack
+---
+
+## 🎯 Problema y enfoque
+
+Este proyecto simula un backend real para la gestión de tareas.
+
+El objetivo no era solo implementar un CRUD, sino construir una API mantenible y preparada para crecer:
+
+- Separación clara entre la API y el modelo de persistencia mediante DTOs.
+- Validación robusta de datos de entrada.
+- Manejo centralizado de errores.
+- Arquitectura por capas bien definida.
+- Cobertura con tests unitarios y de integración.
+
+El foco principal ha sido escribir código backend claro, escalable y entendible.
+
+---
+
+## 🚀 Features
+
+- CRUD completo de tareas: crear, leer, actualizar y eliminar.
+- Validación de datos con Jakarta Validation.
+- Manejo global de errores con respuestas estructuradas.
+- Uso de DTOs para desacoplar API y persistencia.
+- Persistencia en MySQL mediante Spring Data JPA.
+- Tests unitarios para la capa de servicio.
+- Tests de integración para controladores con MockMvc y H2.
+
+---
+
+## 🧱 Stack
 
 | Tecnología | Uso |
 | --- | --- |
 | Java 17 | Lenguaje principal |
 | Spring Boot 3.5 | Base de la aplicación |
 | Spring Web | Exposición de endpoints REST |
-| Spring Data JPA | Acceso a datos y repositorios |
+| Spring Data JPA | Acceso a datos |
 | Jakarta Validation | Validación de requests |
-| MySQL | Base de datos en ejecución local |
+| MySQL | Base de datos principal |
 | H2 | Base de datos en memoria para tests |
-| Maven | Gestión de dependencias y ciclo de build |
-| JUnit 5, Mockito y MockMvc | Tests unitarios e integración |
+| Maven | Gestión de dependencias y build |
+| JUnit 5, Mockito, MockMvc | Testing |
 
-## Funcionalidades
+---
+
+## ⚙️ Funcionalidades
 
 - Crear, listar, consultar, actualizar y eliminar tareas.
-- Persistencia en MySQL mediante Spring Data JPA.
 - Listado de tareas ordenado por fecha de creación descendente.
 - Validación de campos obligatorios y tamaños máximos.
-- DTOs específicos para entrada y salida de datos.
-- Gestión centralizada de errores para recursos no encontrados y errores de validación.
-- Tests unitarios de la capa de servicio.
-- Tests de integración del controlador con MockMvc y H2.
+- DTOs de entrada y salida.
+- Mapeo entre entidades y respuestas de API.
+- Manejo global de excepciones.
+- Tests unitarios y de integración.
 
-## Modelo de tarea
+---
+
+## 📦 Modelo de tarea
 
 | Campo | Tipo | Reglas |
 | --- | --- | --- |
@@ -41,44 +76,46 @@ API REST para gestionar tareas, desarrollada con Java 17 y Spring Boot. El proye
 | `description` | `String` | Opcional, máximo 500 caracteres |
 | `completed` | `Boolean` | Obligatorio |
 | `dueDate` | `LocalDate` | Opcional, formato `YYYY-MM-DD` |
-| `createdAt` | `LocalDateTime` | Generado automáticamente al crear la tarea |
+| `createdAt` | `LocalDateTime` | Generado automáticamente |
 
-## Estructura del proyecto
+---
+
+## 📁 Estructura del proyecto
 
 ```text
 src
 +-- main
 |   +-- java/com/portfolio/taskapi
-|   |   +-- controller      # Endpoints REST
-|   |   +-- dto             # Contratos de entrada y salida
-|   |   +-- entity          # Entidades JPA
-|   |   +-- exception       # Manejo centralizado de errores
-|   |   +-- mapper          # Conversión entre entidades y DTOs
-|   |   +-- repository      # Repositorios Spring Data JPA
-|   |   +-- service         # Lógica de negocio
+|   |   +-- controller
+|   |   +-- dto
+|   |   +-- entity
+|   |   +-- exception
+|   |   +-- mapper
+|   |   +-- repository
+|   |   +-- service
 |   +-- resources
-|       +-- application.properties
 +-- test
     +-- java/com/portfolio/taskapi
-    |   +-- controller      # Tests de integración
-    |   +-- service         # Tests unitarios
+    |   +-- controller
+    |   +-- service
     +-- resources
-        +-- application.properties
 ```
 
-## Ejecutar en local
+---
+
+## ▶️ Ejecutar en local
 
 ### Requisitos
 
 - Java 17 o superior.
 - MySQL en local.
-- Maven Wrapper incluido en el proyecto (`mvnw` / `mvnw.cmd`).
+- Maven Wrapper incluido en el proyecto.
 
 ### Configuración
 
-La aplicación usa estas variables de entorno, con valores por defecto para facilitar la ejecución local:
+Variables por defecto:
 
-| Variable | Valor por defecto |
+| Variable | Valor |
 | --- | --- |
 | `SERVER_PORT` | `8080` |
 | `DB_URL` | `jdbc:mysql://localhost:3306/task_management?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC` |
@@ -113,21 +150,23 @@ En Windows:
 .\mvnw.cmd spring-boot:run
 ```
 
-La API quedará disponible en:
+API disponible en:
 
 ```text
 http://localhost:8080
 ```
 
-## Endpoints
+---
+
+## 🌐 Endpoints
 
 | Método | Endpoint | Descripción | Respuesta |
 | --- | --- | --- | --- |
-| `GET` | `/tasks` | Lista todas las tareas | `200 OK` |
-| `GET` | `/tasks/{id}` | Obtiene una tarea por id | `200 OK` / `404 Not Found` |
-| `POST` | `/tasks` | Crea una tarea | `201 Created` / `400 Bad Request` |
-| `PUT` | `/tasks/{id}` | Actualiza una tarea existente | `200 OK` / `400 Bad Request` / `404 Not Found` |
-| `DELETE` | `/tasks/{id}` | Elimina una tarea | `204 No Content` / `404 Not Found` |
+| `GET` | `/tasks` | Listar tareas | `200 OK` |
+| `GET` | `/tasks/{id}` | Obtener una tarea | `200 OK` / `404 Not Found` |
+| `POST` | `/tasks` | Crear una tarea | `201 Created` / `400 Bad Request` |
+| `PUT` | `/tasks/{id}` | Actualizar una tarea | `200 OK` / `400 Bad Request` / `404 Not Found` |
+| `DELETE` | `/tasks/{id}` | Eliminar una tarea | `204 No Content` / `404 Not Found` |
 
 ### Crear una tarea
 
@@ -155,33 +194,6 @@ Respuesta:
 }
 ```
 
-### Listar tareas
-
-```bash
-curl http://localhost:8080/tasks
-```
-
-Respuesta:
-
-```json
-[
-  {
-    "id": 1,
-    "title": "Preparar portfolio",
-    "description": "Publicar API REST de tareas en GitHub",
-    "completed": false,
-    "dueDate": "2026-05-10",
-    "createdAt": "2026-04-28T10:30:00"
-  }
-]
-```
-
-### Consultar una tarea
-
-```bash
-curl http://localhost:8080/tasks/1
-```
-
 ### Actualizar una tarea
 
 ```bash
@@ -201,9 +213,9 @@ curl -X PUT http://localhost:8080/tasks/1 \
 curl -X DELETE http://localhost:8080/tasks/1
 ```
 
-Si la eliminación se realiza correctamente, la respuesta no devuelve cuerpo y usa el estado `204 No Content`.
+---
 
-## Ejemplos de errores
+## 🧯 Ejemplos de errores
 
 ### Recurso no encontrado
 
@@ -234,21 +246,42 @@ Si la eliminación se realiza correctamente, la respuesta no devuelve cuerpo y u
 }
 ```
 
-## Tests
+---
 
-El proyecto incluye tests unitarios y de integración:
+## 🧪 Tests
+
+El proyecto incluye:
+
+- Tests unitarios para la capa de servicio.
+- Tests de integración para controladores con MockMvc.
+- Base de datos H2 en memoria para ejecutar la suite sin depender de MySQL.
 
 ```bash
 ./mvnw test
 ```
 
-Los tests usan H2 en memoria, por lo que se pueden ejecutar sin tener MySQL levantado.
+En Windows:
 
-## Mejoras futuras
+```powershell
+.\mvnw.cmd test
+```
 
-- Añadir documentación OpenAPI/Swagger.
-- Incorporar paginación, filtros por estado y búsqueda por título.
-- Añadir Docker Compose para levantar la API junto con MySQL.
-- Gestionar migraciones de base de datos con Flyway o Liquibase.
-- Añadir autenticación con Spring Security y JWT.
-- Configurar CI con GitHub Actions.
+---
+
+## 🔮 Mejoras futuras
+
+- Documentación con Swagger / OpenAPI.
+- Paginación, filtros por estado y búsqueda por título.
+- Dockerización con Docker Compose.
+- Autenticación con Spring Security y JWT.
+- Migraciones con Flyway o Liquibase.
+- CI/CD con GitHub Actions.
+
+---
+
+## 👨‍💻 Autor
+
+Iván Martínez<br>
+Junior Backend Developer
+
+👉 https://github.com/ivanml705-cell
